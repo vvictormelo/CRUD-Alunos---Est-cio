@@ -1,5 +1,5 @@
 def program():
-    print("\nSEJA BEM VINDO...\n")
+    print("\033[1;36m\nSEJA BEM VINDO...\n\033[m")
 
     menuInicial()
 
@@ -28,25 +28,25 @@ def menuInicial():
             acao = float(input("\nInsira a ação desejada: "))
             match acao:
                 case 1:
-                    cadastroAluno()
+                    cadastroAluno()  # falta cadastrar validação matrícula
                 case 2:
-                    alterarAluno()
+                    alterarAluno()  # falta implementar
                 case 3:
-                    buscarAluno()
+                    buscarAluno()  # concluído
                 case 4.1:
-                    listarAlunos()
+                    listarAlunos()  # Ajustar exibição
                 case 4.2:
-                    buscarAluno()
+                    alunosAprovados()
                 case 5:
                     configuraDisciplina()
                 case 6:
                     acao = 6
                     print("Saindo...")
                     print("Até logo!!")
-            if (acao > 6.0) or acao < 1.0:
-                print("\nOops... Ação inválida. Tente novamente.")
+            if (acao > 6.0) or (acao < 1.0):
+                print("\033[1;31m\nOops... Ação inválida. Tente novamente.\033[m")
         except ValueError:
-            print("\nOops... Ação inválida. Tente novamente.")
+            print("\033[1;31m\nOops... Ação inválida. Tente novamente.\033[m")
 
 
 def cadastroAluno():
@@ -73,9 +73,11 @@ def cadastroAluno():
             dbalunos.write("Nota 3: " + str(nota3Aluno) + str("\n"))
             dbalunos.write("Faltas: " + str(qtdFaltas) + str("\n"))
             dbalunos.write(str("-") + str("\n"))
-        print("\nAluno cadastrado com sucesso!\n")
+        print("\033[1;32m\nAluno cadastrado com sucesso!\n\033[m")
     except PermissionError:
-        print("\nVocê não possui permissão para acessar o arquivo. Contante o suporte.")
+        print(
+            "\033[1;31m\nVocê não possui permissão para acessar o arquivo. Contante o suporte.\033[m"
+        )
 
 
 def alterarAluno():
@@ -87,29 +89,43 @@ def alterarAluno():
 
     except PermissionError:
         print(
-            "Você não possui credenciais para acessar o arquivo."
+            "\033[1;31mVocê não possui credenciais para acessar o arquivo.\033[m"
         )  # VERIFICAR EXCEPTS
     except FileNotFoundError:
-        print("Arquivo não encontrado!")
+        print("\033[1;31mArquivo não encontrado!\033[m")
 
 
-def buscarAluno():  # MELHORAR A EXIBIÇÃO
+def buscarAluno():
     try:
-        print("\n-=-=-=-=-=-=Buscar Aluno-=-=-=-=-=-=\n")
+        print("\033[1;34m\n-=-=-=-=-=-=Buscar Aluno-=-=-=-=-=-=\n\033[m")
         matFind = str(input("Digite a matrícula: "))
+
         with open("dbalunos.txt", "r", encoding="utf-8") as dbalunos:
             for i, v in enumerate(dbalunos):
                 if v == matFind + "\n":
-                    print(f"\n{v}")
+                    aluno = list()
+                    aluno.append(matFind)
                     for linha in dbalunos:
-                        if linha == "*\n":
+                        if linha == "-\n":
                             break
                         else:
-                            print(f"\n{linha}")
+                            aluno.append(linha.strip())
+
+        print(
+            f"""\033[1;34m
+        Matrícula: {aluno[0]}
+        Nome: {aluno[1]}
+        Nota 1: {aluno[2]}
+        Nota 2: {aluno[3]}
+        Nota 3: {aluno[4]}
+        Média: {((float(aluno[2]) + float(aluno[3]) + float(aluno[4])) / 3):.2f}
+        Faltas: {aluno[5]}
+        \033[m"""
+        )
     except FileNotFoundError:
-        print("Arquivo não encontrado!")
+        print("\033[1;31mArquivo não encontrado!\033[m")
     except PermissionError:
-        print("Você não possui credenciais para acessar o arquivo.")
+        print("\033[1;31mVocê não possui credenciais para acessar o arquivo.\033[m")
 
 
 def listarAlunos():
@@ -119,9 +135,12 @@ def listarAlunos():
             for linha in dbalunos.readlines():
                 print(linha.strip("\n"))
     except FileNotFoundError:
-        print("Arquivo não encontrado!")
+        print("\033[1;31mArquivo não encontrado!\033[m")
     except PermissionError:
-        print("Você não possui credenciais para acessar o arquivo.")
+        print("\033[1;31mVocê não possui credenciais para acessar o arquivo.\033[m")
+
+
+# def alunosAprovados():
 
 
 def configuraDisciplina():
@@ -137,9 +156,11 @@ def configuraDisciplina():
             configuracao.write(nomeProfessor + "\n")
             configuracao.write(str(cargaHorariaDisciplina) + "\n")
             configuracao.write(str(anoDisciplina) + "\n")
-            print("\nDisciplina cadastrada com sucesso!\n")
+            print("\033[1;32m\nDisciplina cadastrada com sucesso!\n\033[m")
     except PermissionError:
-        print("\nVocê não possui permissão para acessar o arquivo. Contante o suporte.")
+        print(
+            "\033[1;31m\nVocê não possui permissão para acessar o arquivo. Contante o suporte.\033[m"
+        )
 
 
 if __name__ == "__main__":
